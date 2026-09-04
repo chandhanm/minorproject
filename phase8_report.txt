@@ -1,0 +1,122 @@
+
+========================================================================
+PHASE 8 — TESTING & OPTIMIZATION
+========================================================================
+Movie Recommendation System
+Project root: C:\Users\LENOVO\Desktop\movielens
+
+========================================================================
+1. DATA LOADING
+========================================================================
+PASS  | movies.csv exists
+PASS  | ratings.csv exists
+Movies shape : (10329, 3)
+Ratings shape: (105339, 4)
+
+========================================================================
+2. DATASET INTEGRITY TESTS
+========================================================================
+PASS  | Movie columns — ['genres', 'movieId', 'title']
+PASS  | Rating columns — ['movieId', 'rating', 'timestamp', 'userId']
+PASS  | Movie IDs are not missing
+PASS  | Required rating values are not missing
+PASS  | Movie IDs are unique
+PASS  | Ratings are inside dataset rating scale
+Users         : 668
+Movies        : 10,329
+Ratings       : 105,339
+Rating range  : 0.5 - 5.0
+Average rating: 3.517
+PASS  | No duplicate rating rows
+
+========================================================================
+3. CONTENT-BASED MODEL TESTS
+========================================================================
+PASS  | TF-IDF row count
+PASS  | Content similarity matrix shape
+TF-IDF matrix : (10329, 178)
+Build time    : 0.666 seconds
+PASS  | Movie search for 'Toy Story' — 3 match(es)
+PASS  | Content-based returns 10 recommendations
+PASS  | Content-based recommendations have unique movies
+PASS  | Content similarity is in [0, 1]
+PASS  | Selected movie is excluded
+
+Top content-based recommendations:
+  Turbo (2013) | similarity=1.000
+  Tale of Despereaux, The (2008) | similarity=1.000
+  Adventures of Rocky and Bullwinkle, The (2000) | similarity=1.000
+  Emperor's New Groove, The (2000) | similarity=1.000
+  Antz (1998) | similarity=1.000
+WARN  | Content model memory — A full cosine similarity matrix is O(N²). For larger datasets, use cosine_similarity(tfidf_matrix[-query]) against the matrix or NearestNeighbors instead of storing all pairs.
+
+========================================================================
+4. COLLABORATIVE FILTERING TESTS
+========================================================================
+Training time: 1.388 seconds
+RMSE         : 0.8671
+MAE          : 0.6719
+PASS  | RMSE is valid
+PASS  | MAE is valid
+Sample prediction: user=1, movie=16, estimate=3.777
+PASS  | SVD prediction is numeric
+Prediction benchmark: 1000 candidates in 0.006 seconds
+PASS  | Collaborative returns 10 recommendations
+PASS  | Collaborative recommendations are unique
+PASS  | Collaborative scores are numeric
+PASS  | Already-rated movies are excluded
+
+Top collaborative recommendations:
+  Third Man, The (1949) | predicted=4.395
+  Lawrence of Arabia (1962) | predicted=4.300
+  Citizen Kane (1941) | predicted=4.296
+  Touch of Evil (1958) | predicted=4.287
+  Bridge on the River Kwai, The (1957) | predicted=4.241
+WARN  | Collaborative runtime — Do not train SVD on every Streamlit rerun. Cache the trained model with @st.cache_resource.
+
+========================================================================
+5. HYBRID MODEL TESTS
+========================================================================
+Hybrid recommendation time: 0.065 seconds
+PASS  | Hybrid returns 10 recommendations
+PASS  | Hybrid recommendations are unique
+PASS  | Hybrid score is in [0, 1]
+PASS  | Hybrid excludes already-rated movies
+
+Top hybrid recommendations:
+  Monsters, Inc. (2001) | content=1.000 | rating=3.939 | hybrid=0.915
+  Toy Story 2 (1999) | content=1.000 | rating=3.923 | hybrid=0.912
+  Boxtrolls, The (2014) | content=1.000 | rating=3.710 | hybrid=0.872
+  Emperor's New Groove, The (2000) | content=1.000 | rating=3.687 | hybrid=0.868
+  DuckTales: The Movie - Treasure of the Lost Lamp (1990) | content=1.000 | rating=3.434 | hybrid=0.821
+
+========================================================================
+6. STREAMLIT APP CODE QUALITY
+========================================================================
+PASS  | Streamlit import
+PASS  | Streamlit page configuration
+PASS  | Model caching is present
+WARN  | Movie card HTML — render_movie_card contains unsafe_allow_html=True. Use native Streamlit components for the card body.
+
+========================================================================
+7. PHASE 8 OPTIMIZATION CHECKLIST
+========================================================================
+01. Cache datasets with @st.cache_data.
+02. Cache trained models with @st.cache_resource.
+03. Do not train SVD on every button click.
+04. Avoid building a full N×N content similarity matrix for larger datasets.
+05. Exclude already-rated movies before collaborative ranking.
+06. Limit candidate movies before expensive prediction operations when appropriate.
+07. Use deterministic random_state values for reproducible experiments.
+08. Keep recommendation count configurable.
+09. Validate recommendation outputs before rendering them.
+10. Keep the UI separate from model-training code.
+
+========================================================================
+PHASE 8 FINAL RESULT
+========================================================================
+Passed: 30
+Failed: 0
+Warnings: 3
+
+STATUS: PHASE 8 TESTING PASSED
